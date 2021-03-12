@@ -22,8 +22,16 @@ func AuthenticatePlayer(username, password, peer_id) -> void:
 	rpc_id(1, "AuthenticatePlayer", username, password, peer_id)
 
 remote func AuthenticationResults(result, peer_id, token) -> void:
-	print("Results received")
+	print("Auth results received")
 	Gateway.ReturnLoginRequest(result, peer_id, token)
+
+func Register(username, password, peer_id) -> void:
+	print("Sending out reg request...")
+	rpc_id(1, "Register", username, password, peer_id)
+
+remote func RegisterResults(result, peer_id, message) -> void:
+	print("Reg results received")
+	Gateway.ReturnRegisterRequest(result, peer_id, message)
 
 
 func _on_server_disconnected() -> void:

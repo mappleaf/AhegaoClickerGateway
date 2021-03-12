@@ -34,10 +34,30 @@ func StartServer() -> void:
 remote func LoginRequest(username, password) -> void:
 	print("Login request received")
 	var peer_id = custom_multiplayer.get_rpc_sender_id()
-	Authenticate.AuthenticatePlayer(username, password, peer_id)
+	Authenticate.AuthenticatePlayer(username.to_lower(), password, peer_id)
 
 func ReturnLoginRequest(result, peer_id, token) -> void:
 	rpc_id(peer_id, "ReturnLoginRequest", result, token)
+	network.disconnect_peer(peer_id)
+
+remote func RegisterRequest(username, password) -> void:
+	var peer_id = custom_multiplayer.get_rpc_sender_id()
+	var is_request_valid = true
+	if username == "":
+		is_request_valid = false
+	if password == "":
+		is_request_valid = false
+	if password.length() < 6:
+		is_request_valid = false
+	
+	if is_request_valid == false:
+		ReturnRegisterRequest(is_request_valid, peer_id, 1)
+	else:
+		Authenticate.Register(username.to_lower(), password, peer_id)
+
+func ReturnRegisterRequest(result, peer_id, message) -> void:
+	rpc_id(peer_id, "ReturnRegisterRequest", result, message)
+	# 1 = failed to create, 2 = existing username, 3 = welcome
 	network.disconnect_peer(peer_id)
 
 
