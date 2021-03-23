@@ -18,7 +18,7 @@ func _process(_delta) -> void:
 
 
 func StartServer() -> void:
-	network.set_dtls_enabled(true)
+	network.set_dtls_enabled(false)
 	network.set_dtls_key(key)
 	network.set_dtls_certificate(cert)
 	
